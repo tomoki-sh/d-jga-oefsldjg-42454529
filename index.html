@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 検索エンジンに載せない（URL推測困難方式） -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1b3a5b" />
+  <title>三重・伊勢路ドライブ — 2026.6.7</title>
+
+  <!-- Leaflet (地図) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- 和フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="hero-kicker">伊勢路ドライブ・日帰り</p>
+      <h1 class="hero-title">三重・伊勢路へ</h1>
+      <p class="hero-sub">2026年6月7日（日）／ 大阪 ⇄ 二見・VISON・松阪</p>
+      <p class="hero-note">海辺の景色・スイーツ・松阪牛をゆったり楽しむ一日</p>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="セクション切替">
+    <button class="tab active" data-tab="schedule">🗓 スケジュール</button>
+    <button class="tab" data-tab="map">🗺 マップ</button>
+    <button class="tab" data-tab="spots">🌿 スポット</button>
+    <button class="tab" data-tab="restaurants">🍽 レストラン</button>
+    <button class="tab" data-tab="cafes">☕ カフェ</button>
+    <button class="tab" data-tab="routes">🚗 ルート</button>
+    <button class="tab" data-tab="packing">🎒 持ち物</button>
+    <button class="tab" data-tab="weather">☀️ 天気</button>
+    <button class="tab" data-tab="info">⚠️ 注意</button>
+  </nav>
+
+  <main class="container">
+    <!-- スケジュール -->
+    <section class="panel active" id="panel-schedule">
+      <h2 class="panel-title">スケジュール</h2>
+      <p class="panel-lead">VISONは1.5〜2時間の立ち寄りに絞り、海辺と松阪牛でゆったり。当日の気分で水族館を入れる／外す調整ができます。</p>
+      <div id="schedule-content"></div>
+    </section>
+
+    <!-- マップ -->
+    <section class="panel" id="panel-map">
+      <h2 class="panel-title">マップ</h2>
+      <p class="panel-lead">ピンをタップで詳細。下のルート編集で訪問順を組み替えると、地図の点線とピン番号に即反映されます。</p>
+      <div class="map-filters" id="map-filters">
+        <div class="filter-group" data-group="type">
+          <span class="filter-label">種類</span>
+          <label class="chip"><input type="checkbox" value="spot" checked> 🌿 スポット</label>
+          <label class="chip"><input type="checkbox" value="restaurant" checked> 🍽 レストラン</label>
+          <label class="chip"><input type="checkbox" value="cafe" checked> ☕ カフェ</label>
+        </div>
+        <div class="filter-group" data-group="category">
+          <span class="filter-label">優先度</span>
+          <label class="chip"><input type="checkbox" value="confirmed" checked> 確定</label>
+          <label class="chip"><input type="checkbox" value="backup" checked> 予備</label>
+          <label class="chip"><input type="checkbox" value="warning" checked> 要確認</label>
+        </div>
+        <div class="filter-group" data-group="route">
+          <span class="filter-label">ルート</span>
+          <label class="chip"><input type="checkbox" value="route-only"> ルート内のみ</label>
+        </div>
+      </div>
+      <div id="map"></div>
+
+      <!-- ルート編集 -->
+      <div class="route-editor">
+        <div class="route-editor-head">
+          <h3>ルート編集</h3>
+          <div class="route-actions">
+            <button class="btn-ghost" id="route-reset">おすすめ順に戻す</button>
+            <button class="btn-ghost" id="route-clear">空にする</button>
+          </div>
+        </div>
+        <div class="route-cols">
+          <div class="route-col">
+            <h4>現在のルート <span class="muted">（ドラッグで並び替え）</span></h4>
+            <ol class="route-list" id="route-list"></ol>
+          </div>
+          <div class="route-col">
+            <h4>候補から追加 <span class="muted">（⊕ または ドラッグ）</span></h4>
+            <ul class="candidates-list" id="candidates-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- スポット -->
+    <section class="panel" id="panel-spots">
+      <h2 class="panel-title">スポット</h2>
+      <p class="panel-lead">海辺・神社・水族館・絶景など、散策と立ち寄りの候補。</p>
+      <div class="cards" id="cards-spots"></div>
+    </section>
+
+    <!-- レストラン -->
+    <section class="panel" id="panel-restaurants">
+      <h2 class="panel-title">レストラン</h2>
+      <p class="panel-lead">締めは松阪牛ディナー。ランチは軽め、VISON内は予備候補。</p>
+      <div class="cards" id="cards-restaurants"></div>
+    </section>
+
+    <!-- カフェ -->
+    <section class="panel" id="panel-cafes">
+      <h2 class="panel-title">カフェ・スイーツ・雑貨</h2>
+      <p class="panel-lead">VISONはConfiture Hのスイーツと雑貨・美術館を軽く。温浴は保険。</p>
+      <div class="cards" id="cards-cafes"></div>
+    </section>
+
+    <!-- ルート -->
+    <section class="panel" id="panel-routes">
+      <h2 class="panel-title">移動ルート</h2>
+      <p class="panel-lead">本命プランの区間と所要時間の目安（高速利用・休憩除く）。</p>
+      <div id="routes-content"></div>
+    </section>
+
+    <!-- 持ち物 -->
+    <section class="panel" id="panel-packing">
+      <h2 class="panel-title">持ち物チェックリスト</h2>
+      <p class="panel-lead">日帰りドライブの最小限。チェックはこの端末に保存されます。</p>
+      <div id="packing-content"></div>
+    </section>
+
+    <!-- 天気 -->
+    <section class="panel" id="panel-weather">
+      <h2 class="panel-title">天気・7日予報</h2>
+      <p class="panel-lead">二見・伊勢エリアの予報。気象警報も自動取得します（Open-Meteo / 気象庁）。</p>
+      <div id="weather-content" class="weather-grid"><p class="muted">読み込み中…</p></div>
+      <div id="weather-alert" class="weather-alert"></div>
+    </section>
+
+    <!-- 注意 -->
+    <section class="panel" id="panel-info">
+      <h2 class="panel-title">注意・要確認</h2>
+      <div id="info-content"></div>
+    </section>
+  </main>
+
+  <!-- ライトボックス -->
+  <div id="lightbox" class="lightbox hidden" aria-hidden="true">
+    <button class="lb-close" id="lb-close" aria-label="閉じる">✕</button>
+    <button class="lb-prev" id="lb-prev" aria-label="前へ">‹</button>
+    <img class="lb-img" id="lb-img" alt="" />
+    <button class="lb-next" id="lb-next" aria-label="次へ">›</button>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+
+  <footer class="foot">
+    <p>三重・伊勢路ドライブ 2026.6.7 ／ 同行者と共有用</p>
+    <p class="muted">画像: Wikimedia Commons ほか ／ 地図: © OpenStreetMap contributors</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
