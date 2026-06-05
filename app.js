@@ -46,6 +46,28 @@ const DATA = {
       maps: "伊勢夫婦岩めおと横丁"
     },
     {
+      name: "伊勢神宮（内宮）", area: "伊勢市宇治館町 / 神社",
+      coords: [34.4569, 136.7230], category: "backup",
+      images: ["images/isejingu.jpg", "images/isejingu_2.jpg"],
+      links: [{ label: "公式サイト", url: "https://www.isejingu.or.jp/" }],
+      badges: [{ text: "伊勢の中心", cls: "priority-alt" }],
+      desc: "天照大御神を祀る日本有数の神社。五十鈴川と杜に包まれた参道が清々しい。おかげ横丁とセットで。",
+      meta: [["所要", "1〜1.5時間"], ["参拝", "境内自由"]],
+      notes: "<strong>メモ:</strong> 内宮はおかげ横丁・おはらい町と隣接。二見からは車で約20分。",
+      maps: "伊勢神宮 内宮"
+    },
+    {
+      name: "おかげ横丁", area: "伊勢市宇治中之切町 / おはらい町",
+      coords: [34.4624, 136.7229], category: "backup",
+      images: ["images/okage.jpg", "images/okage_2.jpg"],
+      links: [{ label: "公式サイト", url: "https://www.okageyokocho.com/" }],
+      badges: [{ text: "食べ歩き・散策", cls: "priority-alt" }],
+      desc: "内宮門前のおはらい町にある江戸〜明治の町並み再現エリア。食べ歩き・お土産・甘味で散策が楽しい。",
+      meta: [["所要", "1時間程度"], ["名物", "赤福・伊勢うどん・食べ歩き"]],
+      notes: "<strong>メモ:</strong> 内宮参拝とセットで。人気エリアなので人混みは多め。",
+      maps: "おかげ横丁 伊勢"
+    },
+    {
       name: "瀧原宮", area: "度会郡大紀町 / 森の参道",
       coords: [34.3670, 136.4242], category: "backup",
       images: ["images/takihara.jpg", "images/takihara_2.jpg", "images/takihara_3.jpg"],
@@ -287,6 +309,17 @@ const DATA = {
       desc: "お茶系の軽い休憩に良い。",
       meta: [["場所", "VISON"]],
       notes: "", maps: "HAPPA STAND VISON"
+    },
+    {
+      name: "たいやき わらしべ VISON店", area: "VISON / たい焼き",
+      coords: [34.4600, 136.5130], category: "backup",
+      images: ["images/warashibe.jpg"],
+      links: [{ label: "食べログ", url: "https://tabelog.com/mie/A2401/A240103/24018091/" }],
+      ratings: { tabelog: "3.46" },
+      badges: [{ text: "食べ歩き", cls: "priority-alt" }],
+      desc: "焼きたてのたい焼きが名物。VISON散策の合間に、軽いおやつ・食べ歩きにちょうどいい。",
+      meta: [["名物", "たい焼き"], ["場所", "VISON"]],
+      notes: "", maps: "たいやき わらしべ VISON"
     },
     {
       name: "本草湯", area: "VISON / 薬草湯（保険）",
