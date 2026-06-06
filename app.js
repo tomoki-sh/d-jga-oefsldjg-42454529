@@ -121,6 +121,17 @@ const DATA = {
       meta: [["注意", "往復で2〜3時間歩く"]],
       notes: "<strong>注意:</strong> 良い場所だが同日に入れると詰め込みになるため今回は見送り候補。",
       maps: "赤目四十八滝"
+    },
+    {
+      name: "三井アウトレットパーク 滋賀竜王", area: "滋賀県竜王町 / アウトレット",
+      coords: [35.0583, 136.0990], category: "backup",
+      images: ["images/ryuo.jpg", "images/ryuo_2.jpg"],
+      links: [{ label: "公式サイト", url: "https://mitsui-shopping-park.com/mop/shiga/" }],
+      badges: [{ text: "買い物", cls: "priority-alt" }, { text: "ルート外", cls: "priority-alt" }],
+      desc: "約240店舗の大型アウトレット。ファッション・雑貨の買い物に。名神・新名神からアクセスしやすい。",
+      meta: [["所要", "1.5〜3時間"], ["注意", "滋賀県（伊勢方面とは別方向）"]],
+      notes: "<strong>注意:</strong> 三重の二見・VISONからは離れた滋賀。立ち寄るなら往復ルートの組み直しが必要。",
+      maps: "三井アウトレットパーク 滋賀竜王"
     }
   ],
 
