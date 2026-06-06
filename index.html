@@ -44,7 +44,23 @@
     <!-- スケジュール -->
     <section class="panel active" id="panel-schedule">
       <h2 class="panel-title">スケジュール</h2>
-      <p class="panel-lead"><strong>確定：</strong>9:30 日産レンタカー大阪上本町店で受取 → 10:00 鴫野駅でピックアップ。ランチは4店から選択式（レストランタブ参照）。VISONは1.5〜2時間に絞り、海辺と松阪牛でゆったり。水族館は当日の気分で。</p>
+      <p class="panel-lead"><strong>確定：</strong>レンタカー受取（9:30 大阪上本町）・三重でランチ（4店から選択）・VISONでカフェ。それ以外（鴫野ピックアップ・二見・水族館・松阪牛ディナー 等）は未確定。下のリストは<strong>ドラッグで並び替え／時刻入力／確定・未確定の切替</strong>ができ、内容はこの端末に保存されます。</p>
+
+      <div class="sched-editor">
+        <div class="sched-legend">
+          <span class="st-chip confirmed">確定</span><span>レンタカー受取・三重でランチ・VISONでカフェ</span>
+          <span class="st-chip tentative">未確定</span><span>それ以外（タップで切替）</span>
+        </div>
+        <ol class="sched-list" id="sched-list"></ol>
+        <div class="sched-toolbar">
+          <select id="sched-add-place" class="sched-select"><option value="">＋ 候補から追加…</option></select>
+          <button class="btn-ghost" id="sched-add-row">＋ 空の行</button>
+          <button class="btn-ghost" id="sched-reset">おすすめ順に戻す</button>
+          <button class="btn-ghost" id="sched-clear">空にする</button>
+        </div>
+      </div>
+
+      <h3 class="sched-subhead">プラン例（参考）</h3>
       <div id="schedule-content"></div>
     </section>
 

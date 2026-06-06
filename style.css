@@ -144,6 +144,30 @@ a { color: var(--ai); }
 .branch.fun h4 { color: var(--shu); }
 .branch p { margin: 0; font-size: .86rem; color: #5c554a; }
 
+/* ===== 編集できるスケジュール ===== */
+.sched-editor { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: .9rem; margin-bottom: 1.2rem; }
+.sched-legend { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .5rem; font-size: .8rem; color: #5c554a; margin-bottom: .7rem; }
+.sched-list { list-style: none; margin: 0 0 .7rem; padding: 0; display: flex; flex-direction: column; gap: .45rem; }
+.sched-item {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .4rem;
+  background: var(--kinari); border: 1px solid var(--line); border-left: 4px solid #c9bfa9;
+  border-radius: 10px; padding: .45rem .55rem;
+}
+.sched-item.confirmed { border-left-color: var(--shu); }
+.sched-handle { cursor: grab; color: var(--muted); font-size: 1.15rem; padding: 0 .15rem; touch-action: none; user-select: none; }
+.sched-time { width: 86px; border: 1px solid var(--line); border-radius: 7px; padding: .3rem .35rem; font: inherit; font-size: .85rem; background: #fff; color: var(--sumi); }
+.sched-text { flex: 1 1 150px; min-width: 0; border: 1px solid var(--line); border-radius: 7px; padding: .38rem .55rem; font: inherit; font-size: .9rem; background: #fff; color: var(--sumi); }
+.sched-status { border: none; cursor: pointer; font-weight: 700; }
+.st-chip { font-size: .72rem; padding: .2rem .55rem; border-radius: 999px; line-height: 1; white-space: nowrap; }
+.st-chip.confirmed { background: var(--shu); color: #fff; }
+.st-chip.tentative { background: #e7decb; color: #6a5d3c; }
+.sched-rm { border: none; background: none; cursor: pointer; color: var(--shu); font-size: 1rem; width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto; }
+.sched-rm:hover { background: #fbe3df; }
+.sched-toolbar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.sched-select { border: 1px solid var(--line); border-radius: 999px; padding: .32rem .7rem; font: inherit; font-size: .8rem; background: #fff; color: var(--ai); max-width: 100%; }
+.sched-empty { color: var(--muted); font-size: .85rem; padding: .5rem; }
+.sched-subhead { color: var(--ai); font-size: 1.12rem; margin: 1.6rem 0 .6rem; border-left: 4px solid var(--gold); padding-left: .5rem; }
+
 /* ===== カード ===== */
 .cards { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
 .card {

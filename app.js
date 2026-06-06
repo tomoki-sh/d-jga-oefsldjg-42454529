@@ -14,10 +14,10 @@ const DATA = {
   spots: [
     {
       name: "二見興玉神社・夫婦岩", area: "伊勢市二見町 / 海辺",
-      coords: [34.5083, 136.7888], category: "confirmed",
+      coords: [34.5083, 136.7888], category: "backup",
       images: ["images/meotoiwa.jpg", "images/meotoiwa_2.jpg", "images/meotoiwa_3.jpg"],
       links: [{ label: "観光情報", url: "https://futamiokitamajinja.or.jp/" }],
-      badges: [{ text: "確定", cls: "priority-top" }, { text: "海辺スタート", cls: "priority-alt" }],
+      badges: [{ text: "海辺散歩", cls: "priority-alt" }, { text: "未確定", cls: "priority-alt" }],
       desc: "海辺・夫婦岩・神社・景色がそろう本命寄り道。ロマンチックだが重すぎず、海辺散歩からゆったり始められる。",
       meta: [["参拝", "境内自由"], ["所要", "30〜45分の散歩"]],
       notes: "<strong>メモ:</strong> 晴れならしっかり、雨なら短めに。海風の上着があると安心。",
@@ -128,13 +128,13 @@ const DATA = {
   restaurants: [
     {
       name: "松阪まるよし 鎌田本店", area: "松阪市鎌田町 / 締めのディナー",
-      coords: [34.5790, 136.5360], category: "confirmed",
+      coords: [34.5790, 136.5360], category: "backup",
       images: ["images/matsusaka.jpg", "images/matsusaka_2.jpg"],
       links: [{ label: "公式サイト", url: "https://www.matsusakaushi.co.jp/" }],
-      badges: [{ text: "本命ディナー", cls: "priority-top" }, { text: "松阪牛", cls: "priority-alt" }],
+      badges: [{ text: "ディナー候補", cls: "priority-alt" }, { text: "未確定", cls: "priority-alt" }],
       desc: "松阪牛の名店。すき焼き・焼肉・ステーキ。三重ドライブの締めに特別感が出る。",
       meta: [["想定", "17:45〜19:00 ディナー"], ["予約", "週末は予約推奨"]],
-      notes: "<strong>メモ:</strong> 夕食をVISON外に出してメリハリを付ける。",
+      notes: "<strong>メモ:</strong> 夕食候補（未確定）。VISON外に出してメリハリを付ける案。",
       maps: "松阪まるよし 鎌田本店"
     },
     {
@@ -255,27 +255,27 @@ const DATA = {
       coords: [34.4585, 136.5145], category: "confirmed",
       images: ["images/vison.jpg"],
       links: [{ label: "VISON公式", url: "https://vison.jp/" }],
-      badges: [{ text: "本命スイーツ", cls: "priority-top" }],
-      desc: "パティシエ辻口博啓氏のジャム＆スイーツ店。ケーキ・スイーツ休憩の本命。VISONに行くなら外さない。",
+      badges: [{ text: "確定（VISONカフェ）", cls: "priority-top" }],
+      desc: "パティシエ辻口博啓氏のジャム＆スイーツ店。VISONでのカフェはここを軸に（確定）。",
       meta: [["想定", "VISONで最初に立ち寄り"]],
       notes: "<strong>メモ:</strong> 甘いもの好きと相性◎。", maps: "Confiture H VISON"
     },
     {
       name: "minä perhonen museum / shop", area: "VISON / 美術館・ファッション",
-      coords: [34.4587, 136.5148], category: "confirmed",
+      coords: [34.4587, 136.5148], category: "backup",
       images: ["images/vison.jpg"],
       links: [{ label: "VISON公式", url: "https://vison.jp/" }],
-      badges: [{ text: "回りたい", cls: "priority-top" }],
+      badges: [{ text: "VISON内", cls: "priority-alt" }],
       desc: "ファッション・美術館要素。重すぎないミュージアム感で会話もしやすい。",
       meta: [["場所", "VISON"]],
       notes: "", maps: "ミナペルホネン VISON"
     },
     {
       name: "D&DEPARTMENT MIE by VISON", area: "VISON / 雑貨・暮らし",
-      coords: [34.4584, 136.5135], category: "confirmed",
+      coords: [34.4584, 136.5135], category: "backup",
       images: ["images/vison.jpg"],
       links: [{ label: "VISON公式", url: "https://vison.jp/" }],
-      badges: [{ text: "回りたい", cls: "priority-top" }],
+      badges: [{ text: "VISON内", cls: "priority-alt" }],
       desc: "雑貨・暮らし系のショップ。おしゃれなもの好きと相性良し。会話もしやすい。",
       meta: [["場所", "VISON"]],
       notes: "", maps: "D&DEPARTMENT MIE VISON"
@@ -349,9 +349,9 @@ const DATA = {
       title: "本命プラン（おすすめ）", featured: true,
       route: "大阪（レンタカー）→ ランチ4店から選択 → 二見興玉神社・夫婦岩 → 伊勢シーパラダイス（気分次第）→ VISON短時間 → 松阪牛ディナー → 大阪",
       items: [
-        ["9:30", "日産レンタカー 大阪上本町店 で受取", "【確定】レンタカー受取"],
-        ["10:00", "鴫野駅でピックアップ → 出発", "【確定】高速で三重方面へ。SA/PA休憩1回"],
-        ["12:00", "三重でランチ（4店から選択）", "いせもん本店 / れんが / 漣 伊勢店 / うなふじ支店 ※下のレストランタブ参照"],
+        ["9:30", "日産レンタカー 大阪上本町店 で受取", "確定。レンタカー受取"],
+        ["10:00", "鴫野駅でピックアップ → 出発", "未確定。高速で三重方面へ。SA/PA休憩1回"],
+        ["12:00", "三重でランチ（4店から選択）", "確定。いせもん本店 / れんが / 漣 伊勢店 / うなふじ支店"],
         ["13:30", "二見興玉神社・夫婦岩 着", "海辺を軽く散歩。景色・夫婦岩・神社"],
         ["14:15", "伊勢シーパラダイス（任意）", "1〜1.5時間で軽く。疲れ・時間次第で外してOK"],
         ["15:45", "VISON 着", "Confiture H → minä perhonen → D&DEPARTMENT → マルシェ"],
@@ -364,9 +364,9 @@ const DATA = {
       title: "ゆったり版", featured: false,
       route: "大阪 → 松阪牛ランチ → VISON → 瀧原宮 → 軽め夕食 → 大阪",
       items: [
-        ["9:30", "日産レンタカー 大阪上本町店 で受取", "【確定】"],
-        ["10:00", "鴫野駅でピックアップ → 出発", "【確定】"],
-        ["12:15", "松阪まるよし で松阪牛ランチ", "昼にしっかりお肉（ランチ4店から選択も可）"],
+        ["9:30", "日産レンタカー 大阪上本町店 で受取", "確定"],
+        ["10:00", "鴫野駅でピックアップ → 出発", "未確定"],
+        ["12:15", "三重でランチ（4店から選択）", "確定。松阪牛ランチにするなら いせもん/れんが も"],
         ["14:00", "VISON（1.5〜2時間）", "Confiture H → minä perhonen → D&DEPARTMENT → マルシェ少し"],
         ["16:15", "瀧原宮", "森の参道を散策、1時間程度"],
         ["18:00", "軽め夕食 or カフェ", "昼にしっかりなら軽めでOK"],
@@ -377,7 +377,7 @@ const DATA = {
       title: "関宿寄り道版", featured: false,
       route: "大阪 → 東海道関宿 → VISON → 瀧原宮 or 松阪ディナー → 大阪",
       items: [
-        ["9:30", "日産レンタカー 大阪上本町店 で受取 → 鴫野でピックアップ", "【確定】受取後すぐ出発"],
+        ["9:30", "日産レンタカー 大阪上本町店 で受取 → 鴫野でピックアップ", "受取は確定／ピックアップは未確定"],
         ["11:00", "東海道関宿", "古い町並みを軽く散策"],
         ["13:15", "VISON（2時間程度）", "スイーツ・雑貨・ミュージアム"],
         ["15:30", "瀧原宮 or カフェ休憩", "歩く気分なら瀧原宮"],
@@ -525,6 +525,82 @@ function renderSchedule() {
       `<div class="branch ${b.cls}"><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p></div>`).join("")}</div>`;
   $("#schedule-content").innerHTML = plans + branches;
 }
+
+/* ---- 編集できるスケジュール（ドラッグ並び替え・時刻入力・確定切替・localStorage保存） ---- */
+const SCHED_KEY = "mie-trip-schedule";
+const SCHED_DEFAULT = [
+  { time: "09:30", text: "日産レンタカー 大阪上本町店 で受取", status: "confirmed" },
+  { time: "10:00", text: "鴫野駅でピックアップ → 出発", status: "tentative" },
+  { time: "12:00", text: "三重でランチ（いせもん / れんが / 漣 伊勢店 / うなふじ から選択）", status: "confirmed" },
+  { time: "13:30", text: "二見興玉神社・夫婦岩（海辺散歩）", status: "tentative" },
+  { time: "14:15", text: "伊勢シーパラダイス（任意）", status: "tentative" },
+  { time: "15:45", text: "VISON でカフェ（Confiture H ほか）", status: "confirmed" },
+  { time: "17:45", text: "松阪牛ディナー（まるよし 等）", status: "tentative" },
+  { time: "19:30", text: "帰路", status: "tentative" }
+];
+let schedule = loadSchedule();
+function loadSchedule() {
+  try { const s = JSON.parse(localStorage.getItem(SCHED_KEY)); if (Array.isArray(s)) return s; } catch (e) {}
+  return SCHED_DEFAULT.map(x => ({ ...x }));
+}
+function saveSchedule() { localStorage.setItem(SCHED_KEY, JSON.stringify(schedule)); }
+
+function renderScheduleEditor() {
+  const list = $("#sched-list");
+  if (!list) return;
+  if (!schedule.length) {
+    list.innerHTML = `<li class="sched-empty">予定がありません。「＋ 空の行」や「候補から追加」で作成できます。</li>`;
+  } else {
+    list.innerHTML = schedule.map((it, i) => `
+      <li class="sched-item ${it.status === "confirmed" ? "confirmed" : "tentative"}" data-i="${i}">
+        <span class="sched-handle" aria-label="ドラッグして並び替え" title="ドラッグで並び替え">≡</span>
+        <input class="sched-time" type="time" value="${esc(it.time || "")}" data-i="${i}" aria-label="時刻">
+        <input class="sched-text" type="text" value="${esc(it.text || "")}" data-i="${i}" placeholder="予定を入力" aria-label="予定">
+        <button class="sched-status st-chip ${it.status === "confirmed" ? "confirmed" : "tentative"}" data-i="${i}" title="確定／未確定を切替">${it.status === "confirmed" ? "確定" : "未確定"}</button>
+        <button class="sched-rm" data-i="${i}" aria-label="この行を削除">✕</button>
+      </li>`).join("");
+  }
+  // 入力・操作イベント（textはinputで都度保存、フォーカス維持のため再描画しない）
+  $$("#sched-list .sched-time").forEach(el => el.addEventListener("change", e => { schedule[+e.currentTarget.dataset.i].time = e.currentTarget.value; saveSchedule(); }));
+  $$("#sched-list .sched-text").forEach(el => el.addEventListener("input", e => { schedule[+e.currentTarget.dataset.i].text = e.currentTarget.value; saveSchedule(); }));
+  $$("#sched-list .sched-status").forEach(el => el.addEventListener("click", e => {
+    const i = +e.currentTarget.dataset.i;
+    schedule[i].status = schedule[i].status === "confirmed" ? "tentative" : "confirmed";
+    saveSchedule(); renderScheduleEditor();
+  }));
+  $$("#sched-list .sched-rm").forEach(el => el.addEventListener("click", e => {
+    schedule.splice(+e.currentTarget.dataset.i, 1); saveSchedule(); renderScheduleEditor();
+  }));
+}
+
+function populateSchedAddSelect() {
+  const sel = $("#sched-add-place"); if (!sel) return;
+  const groups = [["spots", "🌿 スポット"], ["restaurants", "🍽 レストラン"], ["cafes", "☕ カフェ"]];
+  sel.innerHTML = `<option value="">＋ 候補から追加…</option>` + groups.map(([key, label]) =>
+    `<optgroup label="${label}">` + DATA[key].map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join("") + `</optgroup>`
+  ).join("");
+  sel.addEventListener("change", () => {
+    if (!sel.value) return;
+    schedule.push({ time: "", text: sel.value, status: "tentative" });
+    saveSchedule(); renderScheduleEditor(); sel.value = "";
+  });
+}
+
+let schedSortInit = false;
+function setupScheduleSortable() {
+  if (schedSortInit || typeof Sortable === "undefined" || !$("#sched-list")) return;
+  schedSortInit = true;
+  Sortable.create($("#sched-list"), {
+    animation: 150, handle: ".sched-handle", draggable: ".sched-item",
+    ghostClass: "sortable-ghost", chosenClass: "sortable-chosen",
+    onEnd: () => {
+      const order = $$("#sched-list .sched-item").map(li => +li.dataset.i);
+      schedule = order.map(i => schedule[i]);
+      saveSchedule(); renderScheduleEditor();
+    }
+  });
+}
+
 function renderRoutes() {
   $("#routes-content").innerHTML = DATA.legs.map(l =>
     `<div class="leg">
@@ -855,6 +931,9 @@ function setupTabs() {
    ========================================================================= */
 function init() {
   renderSchedule();
+  renderScheduleEditor();
+  populateSchedAddSelect();
+  setupScheduleSortable();
   renderCards("#cards-spots", DATA.spots, "spot");
   renderCards("#cards-restaurants", DATA.restaurants, "restaurant");
   renderCards("#cards-cafes", DATA.cafes, "cafe");
@@ -874,6 +953,11 @@ function init() {
   // ルート編集ボタン
   $("#route-reset").addEventListener("click", () => { routeIds = DEFAULT_ROUTE.slice(); syncRoute(); });
   $("#route-clear").addEventListener("click", () => { routeIds = []; syncRoute(); });
+
+  // スケジュール編集ボタン
+  $("#sched-add-row").addEventListener("click", () => { schedule.push({ time: "", text: "", status: "tentative" }); saveSchedule(); renderScheduleEditor(); });
+  $("#sched-reset").addEventListener("click", () => { schedule = SCHED_DEFAULT.map(x => ({ ...x })); saveSchedule(); renderScheduleEditor(); });
+  $("#sched-clear").addEventListener("click", () => { schedule = []; saveSchedule(); renderScheduleEditor(); });
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
