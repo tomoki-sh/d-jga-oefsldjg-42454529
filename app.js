@@ -523,22 +523,59 @@ function renderCards(targetId, items, type) {
 /* =========================================================================
    スケジュール / ルート / 持ち物 / 注意
    ========================================================================= */
-function renderSchedule() {
-  const plans = DATA.plans.map(pl => {
-    const tl = pl.items.map(([t, b, s]) =>
-      `<li><span class="tl-time">${esc(t)}</span><span class="tl-body">${esc(b)}${s ? `<span class="tl-sub">${esc(s)}</span>` : ""}</span></li>`
-    ).join("");
-    const tag = pl.tag ? `<span class="tag top">${esc(pl.tag)}</span>` : (pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>');
-    return `<div class="plan-card ${pl.featured ? "featured" : ""}">
-      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}</div>
-      <p class="plan-route">${esc(pl.route)}</p>
+function planCardHtml(pl, opts = {}) {
+  const tl = pl.items.map(([t, b, s]) =>
+    `<li><span class="tl-time">${esc(t)}</span><span class="tl-body">${esc(b)}${s ? `<span class="tl-sub">${esc(s)}</span>` : ""}</span></li>`
+  ).join("");
+  const tag = opts.user
+    ? `<span class="tag user">保存</span>`
+    : (pl.tag ? `<span class="tag top">${esc(pl.tag)}</span>` : (pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>'));
+  const del = opts.user ? `<button class="plan-del" data-pid="${pl.id}" aria-label="このプランを削除">削除</button>` : "";
+  return `<div class="plan-card ${pl.featured ? "featured" : ""} ${opts.user ? "userplan" : ""}">
+      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}${del}</div>
+      ${pl.route ? `<p class="plan-route">${esc(pl.route)}</p>` : ""}
       <ol class="timeline">${tl}</ol>
     </div>`;
-  }).join("");
+}
+function renderSchedule() {
+  const builtin = DATA.plans.map(pl => planCardHtml(pl)).join("");
+  const user = userPlans.length
+    ? `<h4 class="sched-subhead" style="margin-top:1.2rem;">保存したプラン</h4>` + userPlans.map(pl => planCardHtml(pl, { user: true })).join("")
+    : "";
   const branches = `<h3 style="color:var(--ai);margin:1.4rem 0 .6rem;">当日の調整方針</h3>
     <div class="branch-grid">${DATA.branches.map(b =>
       `<div class="branch ${b.cls}"><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p></div>`).join("")}</div>`;
-  $("#schedule-content").innerHTML = plans + branches;
+  $("#schedule-content").innerHTML = builtin + user + branches;
+  $$("#schedule-content .plan-del").forEach(b => b.addEventListener("click", () => deleteUserPlan(+b.dataset.pid)));
+}
+
+/* ---- 編集中スケジュールを「プラン例」に保存（この端末に保存・削除可） ---- */
+const USERPLAN_KEY = "mie-trip-userplans";
+function loadUserPlans() {
+  try { const s = JSON.parse(localStorage.getItem(USERPLAN_KEY)); if (Array.isArray(s)) return s; } catch (e) {}
+  return [];
+}
+function saveUserPlans() { localStorage.setItem(USERPLAN_KEY, JSON.stringify(userPlans)); }
+let userPlans = loadUserPlans();
+
+function addCurrentScheduleAsPlan() {
+  if (!schedule.length) { window.alert("スケジュールが空です。先に予定を入れてください。"); return; }
+  const def = "保存プラン " + (userPlans.length + 1);
+  const title = (window.prompt("プラン名を入力してください:", def) || "").trim();
+  if (!title) return;
+  const items = schedule.map(it => [it.time || "—", it.text || "", it.status === "confirmed" ? "確定" : "未確定"]);
+  // 連番idで一意化（同一ミリ秒の連続追加に備える）
+  const id = (userPlans.reduce((m, p) => Math.max(m, p.id || 0), 0) + 1);
+  userPlans.push({ id, title, items });
+  saveUserPlans();
+  renderSchedule();
+  window.alert(`「${title}」をプラン例（保存したプラン）に追加しました。`);
+}
+function deleteUserPlan(id) {
+  if (!window.confirm("この保存プランを削除しますか？")) return;
+  userPlans = userPlans.filter(p => p.id !== id);
+  saveUserPlans();
+  renderSchedule();
 }
 
 /* ---- 編集できるスケジュール（ドラッグ並び替え・時刻入力・確定切替・localStorage保存） ----
@@ -1045,6 +1082,7 @@ function init() {
   $("#sched-add-row").addEventListener("click", () => { schedule.push({ time: "", text: "", status: "tentative" }); saveSchedule(); renderScheduleEditor(); });
   $("#sched-reset").addEventListener("click", () => { schedule = SCHED_DEFAULT.map(x => ({ ...x })); saveSchedule(); renderScheduleEditor(); });
   $("#sched-clear").addEventListener("click", () => { schedule = []; saveSchedule(); renderScheduleEditor(); });
+  $("#sched-save-plan").addEventListener("click", addCurrentScheduleAsPlan);
   $("#sched-export").addEventListener("click", exportSchedule);
 }
 
