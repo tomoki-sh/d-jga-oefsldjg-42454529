@@ -551,32 +551,101 @@ function renderCards(targetId, items, type) {
    スケジュール / ルート / 持ち物 / 注意
    ========================================================================= */
 function planCardHtml(pl, opts = {}) {
+  const isUser = opts.kind === "user";
   const tl = pl.items.map(([t, b, s]) =>
     `<li><span class="tl-time">${esc(t)}</span><span class="tl-body">${esc(b)}${s ? `<span class="tl-sub">${esc(s)}</span>` : ""}</span></li>`
   ).join("");
-  const tag = opts.user
+  const tag = isUser
     ? `<span class="tag user">保存</span>`
     : (pl.tag ? `<span class="tag top">${esc(pl.tag)}</span>` : (pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>'));
-  const actions = opts.user
-    ? `<div class="plan-actions"><button class="plan-export" data-pid="${pl.id}">共有用に書き出す</button><button class="plan-del" data-pid="${pl.id}" aria-label="このプランを削除">削除</button></div>`
-    : "";
-  return `<div class="plan-card ${pl.featured ? "featured" : ""} ${opts.user ? "userplan" : ""}">
-      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}${actions}</div>
+  const exportBtn = isUser ? `<button class="plan-export" data-key="${esc(opts.key)}">共有用に書き出す</button>` : "";
+  const actions = `<div class="plan-actions">
+      <button class="plan-copy" data-key="${esc(opts.key)}">コピー</button>
+      ${exportBtn}
+      <button class="plan-del" data-key="${esc(opts.key)}" aria-label="このプランを削除">削除</button>
+    </div>`;
+  return `<div class="plan-card ${pl.featured ? "featured" : ""} ${isUser ? "userplan" : ""}" data-key="${esc(opts.key)}">
+      <div class="plan-head"><span class="plan-handle" title="ドラッグで並び替え">≡</span><h3>${esc(pl.title)}</h3>${tag}${actions}</div>
       ${pl.route ? `<p class="plan-route">${esc(pl.route)}</p>` : ""}
       <ol class="timeline">${tl}</ol>
     </div>`;
 }
+
+/* 組込(DATA.plans)＋保存プランを安定キー付きで統合 */
+function masterPlans() {
+  return [
+    ...DATA.plans.map(p => ({ plan: p, key: "b:" + p.title, kind: "builtin" })),
+    ...userPlans.map(p => ({ plan: p, key: "u:" + p.id, kind: "user" }))
+  ];
+}
+function findPlanByKey(key) { return masterPlans().find(e => e.key === key); }
+function orderedPlans() {
+  const list = masterPlans().filter(e => !planView.hidden.includes(e.key));
+  const rank = k => { const i = planView.order.indexOf(k); return i < 0 ? Infinity : i; };
+  return list.map((e, i) => ({ e, i }))
+    .sort((a, b) => (rank(a.e.key) - rank(b.e.key)) || (a.i - b.i))
+    .map(x => x.e);
+}
+
 function renderSchedule() {
-  const builtin = DATA.plans.map(pl => planCardHtml(pl)).join("");
-  const user = userPlans.length
-    ? `<h4 class="sched-subhead" style="margin-top:1.2rem;">保存したプラン</h4>` + userPlans.map(pl => planCardHtml(pl, { user: true })).join("")
+  const cards = orderedPlans().map(e => planCardHtml(e.plan, { key: e.key, kind: e.kind })).join("");
+  const hiddenN = planView.hidden.length;
+  const reset = (planView.order.length || hiddenN)
+    ? `<div class="plan-list-tools"><button class="btn-ghost" id="plan-view-reset">並び順・表示をリセット${hiddenN ? `（非表示 ${hiddenN} 件）` : ""}</button></div>`
     : "";
   const branches = `<h3 style="color:var(--ai);margin:1.4rem 0 .6rem;">当日の調整方針</h3>
     <div class="branch-grid">${DATA.branches.map(b =>
       `<div class="branch ${b.cls}"><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p></div>`).join("")}</div>`;
-  $("#schedule-content").innerHTML = builtin + user + branches;
-  $$("#schedule-content .plan-del").forEach(b => b.addEventListener("click", () => deleteUserPlan(+b.dataset.pid)));
-  $$("#schedule-content .plan-export").forEach(b => b.addEventListener("click", () => exportUserPlanToData(+b.dataset.pid)));
+  $("#schedule-content").innerHTML =
+    `<div class="plan-list" id="plan-list">${cards || '<p class="muted">表示できるプランがありません。</p>'}</div>${reset}${branches}`;
+  $$("#plan-list .plan-copy").forEach(b => b.addEventListener("click", () => copyPlan(b.dataset.key, b)));
+  $$("#plan-list .plan-del").forEach(b => b.addEventListener("click", () => deletePlanByKey(b.dataset.key)));
+  $$("#plan-list .plan-export").forEach(b => b.addEventListener("click", () => exportUserPlanToData(+b.dataset.key.slice(2))));
+  const rb = $("#plan-view-reset");
+  if (rb) rb.addEventListener("click", () => { planView = { order: [], hidden: [] }; savePlanView(); renderSchedule(); });
+  setupPlanSortable();
+}
+
+/* プラン例のドラッグ並び替え（ハンドル ≡） */
+function setupPlanSortable() {
+  const el = $("#plan-list");
+  if (!el || typeof Sortable === "undefined") return;
+  Sortable.create(el, {
+    animation: 150, handle: ".plan-handle", draggable: ".plan-card",
+    ghostClass: "sortable-ghost", chosenClass: "sortable-chosen",
+    onEnd: () => {
+      planView.order = $$("#plan-list .plan-card").map(c => c.dataset.key);
+      savePlanView();
+    }
+  });
+}
+
+/* プラン内容をテキストでコピー（LINE等に貼れる形式） */
+function copyPlan(key, btn) {
+  const e = findPlanByKey(key); if (!e) return;
+  const pl = e.plan;
+  const text = `【${pl.title}】` + (pl.route ? `\n${pl.route}` : "") + "\n" +
+    pl.items.map(([t, b, s]) => `${t}  ${b}${s ? `（${s}）` : ""}`).join("\n");
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = "コピー済"; setTimeout(() => { btn.textContent = o; }, 1200); } };
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => window.prompt("コピーしてください:", text));
+  else window.prompt("コピーしてください:", text);
+}
+
+/* 削除: 保存プランは実削除、組込プランはこの端末で非表示（リセットで復活） */
+function deletePlanByKey(key) {
+  const e = findPlanByKey(key); if (!e) return;
+  if (e.kind === "user") {
+    if (!window.confirm(`「${e.plan.title}」を削除しますか？`)) return;
+    const id = +key.slice(2);
+    userPlans = userPlans.filter(p => p.id !== id);
+    saveUserPlans();
+    planView.order = planView.order.filter(k => k !== key);
+  } else {
+    if (!window.confirm(`「${e.plan.title}」を非表示にしますか？（「並び順・表示をリセット」で戻せます）`)) return;
+    if (!planView.hidden.includes(key)) planView.hidden.push(key);
+  }
+  savePlanView();
+  renderSchedule();
 }
 
 /* 保存プランを DATA.plans 用のオブジェクトとして書き出す（commitで全員に共有） */
@@ -595,14 +664,21 @@ ${items}
   window.prompt("この内容を app.js の DATA.plans 配列に追加して commit すると、全員のプラン例に表示されます（クリップボードにもコピー済み）:", out);
 }
 
-/* ---- 編集中スケジュールを「プラン例」に保存（この端末に保存・削除可） ---- */
+/* ---- 保存プラン＆プラン例の表示状態（この端末に保存） ---- */
 const USERPLAN_KEY = "mie-trip-userplans";
+const PLANVIEW_KEY = "mie-trip-planview";
 function loadUserPlans() {
   try { const s = JSON.parse(localStorage.getItem(USERPLAN_KEY)); if (Array.isArray(s)) return s; } catch (e) {}
   return [];
 }
 function saveUserPlans() { localStorage.setItem(USERPLAN_KEY, JSON.stringify(userPlans)); }
+function loadPlanView() {
+  try { const s = JSON.parse(localStorage.getItem(PLANVIEW_KEY)); if (s && typeof s === "object") return { order: Array.isArray(s.order) ? s.order : [], hidden: Array.isArray(s.hidden) ? s.hidden : [] }; } catch (e) {}
+  return { order: [], hidden: [] };
+}
+function savePlanView() { localStorage.setItem(PLANVIEW_KEY, JSON.stringify(planView)); }
 let userPlans = loadUserPlans();
+let planView = loadPlanView();
 
 function addCurrentScheduleAsPlan() {
   if (!schedule.length) { window.alert("スケジュールが空です。先に予定を入れてください。"); return; }
@@ -610,18 +686,11 @@ function addCurrentScheduleAsPlan() {
   const title = (window.prompt("プラン名を入力してください:", def) || "").trim();
   if (!title) return;
   const items = schedule.map(it => [it.time || "—", it.text || "", it.status === "confirmed" ? "確定" : "未確定"]);
-  // 連番idで一意化（同一ミリ秒の連続追加に備える）
   const id = (userPlans.reduce((m, p) => Math.max(m, p.id || 0), 0) + 1);
   userPlans.push({ id, title, items });
   saveUserPlans();
   renderSchedule();
-  window.alert(`「${title}」をプラン例（保存したプラン）に追加しました。`);
-}
-function deleteUserPlan(id) {
-  if (!window.confirm("この保存プランを削除しますか？")) return;
-  userPlans = userPlans.filter(p => p.id !== id);
-  saveUserPlans();
-  renderSchedule();
+  window.alert(`「${title}」をプラン例に追加しました。`);
 }
 
 /* ---- 編集できるスケジュール（ドラッグ並び替え・時刻入力・確定切替・localStorage保存） ----
