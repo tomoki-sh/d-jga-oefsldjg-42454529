@@ -532,16 +532,16 @@ function renderSchedule() {
      必ず SCHED_VERSION を +1 して commit すること。
      → 各端末は保存済みバージョンが古いと自動で新しい初期表示に更新される。 */
 const SCHED_KEY = "mie-trip-schedule";
-const SCHED_VERSION = 2;   // SCHED_DEFAULT を更新したら必ず +1 する
+const SCHED_VERSION = 3;   // SCHED_DEFAULT を更新したら必ず +1 する
 const SCHED_DEFAULT = [
   { time: "09:30", text: "日産レンタカー 大阪上本町店 で受取", status: "confirmed" },
-  { time: "10:00", text: "鴫野駅でピックアップ → 出発", status: "tentative" },
   { time: "12:00", text: "三重でランチ（いせもん / れんが / 漣 伊勢店 / うなふじ から選択）", status: "confirmed" },
-  { time: "13:30", text: "二見興玉神社・夫婦岩（海辺散歩）", status: "tentative" },
-  { time: "14:15", text: "伊勢シーパラダイス（任意）", status: "tentative" },
-  { time: "15:45", text: "VISON でカフェ（Confiture H ほか）", status: "confirmed" },
-  { time: "17:45", text: "松阪牛ディナー（まるよし 等）", status: "tentative" },
-  { time: "19:30", text: "帰路", status: "tentative" }
+  { time: "13:30", text: "時間が余ったらどこかスポット挟む", status: "tentative" },
+  { time: "14:30", text: "VISON でカフェ（Confiture H ほか）", status: "confirmed" },
+  { time: "16:30", text: "時間が余ったらどこかスポット挟む", status: "tentative" },
+  { time: "17:30", text: "時間が余れば夕食。なければ大阪帰ってから", status: "tentative" },
+  { time: "19:00", text: "三重出発締め切り", status: "confirmed" },
+  { time: "21:30", text: "日産レンタカー 大阪上本町店 へ返却", status: "confirmed" }
 ];
 let schedule = loadSchedule();
 function loadSchedule() {
