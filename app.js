@@ -526,8 +526,13 @@ function renderSchedule() {
   $("#schedule-content").innerHTML = plans + branches;
 }
 
-/* ---- 編集できるスケジュール（ドラッグ並び替え・時刻入力・確定切替・localStorage保存） ---- */
+/* ---- 編集できるスケジュール（ドラッグ並び替え・時刻入力・確定切替・localStorage保存） ----
+   ★共有の初期表示（A仕様）: 下の SCHED_DEFAULT が「全員に配られる初期スケジュール」。
+     並びを確定したら「共有用に書き出す」ボタンの出力を SCHED_DEFAULT に貼り替え、
+     必ず SCHED_VERSION を +1 して commit すること。
+     → 各端末は保存済みバージョンが古いと自動で新しい初期表示に更新される。 */
 const SCHED_KEY = "mie-trip-schedule";
+const SCHED_VERSION = 2;   // SCHED_DEFAULT を更新したら必ず +1 する
 const SCHED_DEFAULT = [
   { time: "09:30", text: "日産レンタカー 大阪上本町店 で受取", status: "confirmed" },
   { time: "10:00", text: "鴫野駅でピックアップ → 出発", status: "tentative" },
@@ -540,10 +545,25 @@ const SCHED_DEFAULT = [
 ];
 let schedule = loadSchedule();
 function loadSchedule() {
-  try { const s = JSON.parse(localStorage.getItem(SCHED_KEY)); if (Array.isArray(s)) return s; } catch (e) {}
+  try {
+    const raw = JSON.parse(localStorage.getItem(SCHED_KEY));
+    // 保存バージョンが現行と一致する場合のみローカル編集を採用。
+    // 古い／無い場合は新しい共有初期表示(SCHED_DEFAULT)に更新する。
+    if (raw && raw.v === SCHED_VERSION && Array.isArray(raw.items)) return raw.items;
+  } catch (e) {}
   return SCHED_DEFAULT.map(x => ({ ...x }));
 }
-function saveSchedule() { localStorage.setItem(SCHED_KEY, JSON.stringify(schedule)); }
+function saveSchedule() { localStorage.setItem(SCHED_KEY, JSON.stringify({ v: SCHED_VERSION, items: schedule })); }
+
+/* 現在の並びを SCHED_DEFAULT 用のコード片として書き出す（A仕様の更新を簡単に） */
+function exportSchedule() {
+  const lines = schedule.map(it =>
+    `  { time: ${JSON.stringify(it.time || "")}, text: ${JSON.stringify(it.text || "")}, status: ${JSON.stringify(it.status || "tentative")} }`
+  ).join(",\n");
+  const out = `const SCHED_DEFAULT = [\n${lines}\n];`;
+  if (navigator.clipboard) navigator.clipboard.writeText(out).catch(() => {});
+  window.prompt("この内容を app.js の SCHED_DEFAULT に貼り替え、SCHED_VERSION を +1 して commit すると全員の初期表示が更新されます（クリップボードにもコピー済み）:", out);
+}
 
 function renderScheduleEditor() {
   const list = $("#sched-list");
@@ -586,18 +606,56 @@ function populateSchedAddSelect() {
   });
 }
 
+/* 右側の候補リスト（スポット/レストラン/カフェ）を描画。ドラッグまたは⊕で左へ追加 */
+function renderSchedCandidates() {
+  const el = $("#sched-candidates"); if (!el) return;
+  const groups = [["spots", "🌿 スポット"], ["restaurants", "🍽 レストラン"], ["cafes", "☕ カフェ"]];
+  el.innerHTML = groups.map(([key, label], gi) => {
+    const emoji = ["spot", "restaurant", "cafe"][gi];
+    const head = `<li class="sched-cand-head">${label}</li>`;
+    const items = DATA[key].map(p =>
+      `<li class="sched-cand-item" data-name="${esc(p.name)}">
+        <span class="type-emoji">${TYPE_ICONS[emoji]}</span>
+        <span class="nm">${esc(p.name)}</span>
+        <button class="cand-add" data-name="${esc(p.name)}" aria-label="左に追加">⊕</button>
+      </li>`).join("");
+    return head + items;
+  }).join("");
+  $$("#sched-candidates .cand-add").forEach(b => b.addEventListener("click", () => {
+    schedule.push({ time: "", text: b.dataset.name, status: "tentative" });
+    saveSchedule(); renderScheduleEditor();
+  }));
+}
+
 let schedSortInit = false;
 function setupScheduleSortable() {
   if (schedSortInit || typeof Sortable === "undefined" || !$("#sched-list")) return;
   schedSortInit = true;
+  // タイムスケジュール: 内部並び替え＋候補からの受け入れ
   Sortable.create($("#sched-list"), {
+    group: { name: "sched-shared", pull: false, put: true },
     animation: 150, handle: ".sched-handle", draggable: ".sched-item",
     ghostClass: "sortable-ghost", chosenClass: "sortable-chosen",
-    onEnd: () => {
+    onAdd: (evt) => {
+      // 候補リストから落ちてきた要素を予定に変換
+      const name = evt.item.dataset.name;
+      const at = Array.prototype.indexOf.call($("#sched-list").children, evt.item);
+      evt.item.remove();
+      if (name != null) {
+        schedule.splice(at < 0 ? schedule.length : at, 0, { time: "", text: name, status: "tentative" });
+        saveSchedule(); renderScheduleEditor();
+      }
+    },
+    onUpdate: () => {
       const order = $$("#sched-list .sched-item").map(li => +li.dataset.i);
       schedule = order.map(i => schedule[i]);
       saveSchedule(); renderScheduleEditor();
     }
+  });
+  // 候補リスト: クローンを引き出すだけ
+  Sortable.create($("#sched-candidates"), {
+    group: { name: "sched-shared", pull: "clone", put: false },
+    sort: false, animation: 150, draggable: ".sched-cand-item"
   });
 }
 
@@ -932,6 +990,7 @@ function setupTabs() {
 function init() {
   renderSchedule();
   renderScheduleEditor();
+  renderSchedCandidates();
   populateSchedAddSelect();
   setupScheduleSortable();
   renderCards("#cards-spots", DATA.spots, "spot");
@@ -958,6 +1017,7 @@ function init() {
   $("#sched-add-row").addEventListener("click", () => { schedule.push({ time: "", text: "", status: "tentative" }); saveSchedule(); renderScheduleEditor(); });
   $("#sched-reset").addEventListener("click", () => { schedule = SCHED_DEFAULT.map(x => ({ ...x })); saveSchedule(); renderScheduleEditor(); });
   $("#sched-clear").addEventListener("click", () => { schedule = []; saveSchedule(); renderScheduleEditor(); });
+  $("#sched-export").addEventListener("click", exportSchedule);
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

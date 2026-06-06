@@ -51,12 +51,22 @@
           <span class="st-chip confirmed">確定</span><span>レンタカー受取・三重でランチ・VISONでカフェ</span>
           <span class="st-chip tentative">未確定</span><span>それ以外（タップで切替）</span>
         </div>
-        <ol class="sched-list" id="sched-list"></ol>
-        <div class="sched-toolbar">
-          <select id="sched-add-place" class="sched-select"><option value="">＋ 候補から追加…</option></select>
-          <button class="btn-ghost" id="sched-add-row">＋ 空の行</button>
-          <button class="btn-ghost" id="sched-reset">おすすめ順に戻す</button>
-          <button class="btn-ghost" id="sched-clear">空にする</button>
+        <div class="sched-cols">
+          <div class="sched-col">
+            <h4 class="sched-col-h">タイムスケジュール <span class="muted">ドラッグ並び替え・時刻入力・確定切替</span></h4>
+            <ol class="sched-list" id="sched-list"></ol>
+            <div class="sched-toolbar">
+              <select id="sched-add-place" class="sched-select"><option value="">＋ 候補から追加…</option></select>
+              <button class="btn-ghost" id="sched-add-row">＋ 空の行</button>
+              <button class="btn-ghost" id="sched-reset">おすすめ順に戻す</button>
+              <button class="btn-ghost" id="sched-clear">空にする</button>
+              <button class="btn-ghost" id="sched-export">共有用に書き出す</button>
+            </div>
+          </div>
+          <div class="sched-col">
+            <h4 class="sched-col-h">候補リスト <span class="muted">ドラッグ or ⊕ で左へ追加</span></h4>
+            <ul class="sched-cand-list" id="sched-candidates"></ul>
+          </div>
         </div>
       </div>
 

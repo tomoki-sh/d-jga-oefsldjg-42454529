@@ -165,8 +165,25 @@ a { color: var(--ai); }
 .sched-rm:hover { background: #fbe3df; }
 .sched-toolbar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
 .sched-select { border: 1px solid var(--line); border-radius: 999px; padding: .32rem .7rem; font: inherit; font-size: .8rem; background: #fff; color: var(--ai); max-width: 100%; }
-.sched-empty { color: var(--muted); font-size: .85rem; padding: .5rem; }
+.sched-empty { color: var(--muted); font-size: .85rem; padding: .5rem; border: 1px dashed var(--line); border-radius: 10px; text-align: center; }
 .sched-subhead { color: var(--ai); font-size: 1.12rem; margin: 1.6rem 0 .6rem; border-left: 4px solid var(--gold); padding-left: .5rem; }
+
+/* 2カラム（タイムスケジュール ＋ 候補リスト） */
+.sched-cols { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.sched-col-h { margin: 0 0 .5rem; font-size: .92rem; color: var(--ai); }
+.sched-col-h .muted { font-weight: 400; }
+.sched-cand-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; max-height: 460px; overflow-y: auto; }
+.sched-cand-head { font-size: .76rem; font-weight: 700; color: var(--ai); padding: .35rem .2rem .1rem; position: sticky; top: 0; background: var(--card); }
+.sched-cand-item {
+  display: flex; align-items: center; gap: .5rem; background: var(--kinari);
+  border: 1px solid var(--line); border-radius: 10px; padding: .4rem .55rem;
+  font-size: .86rem; cursor: grab;
+}
+.sched-cand-item .type-emoji { font-size: 1rem; }
+.sched-cand-item .nm { flex: 1; min-width: 0; }
+.sched-cand-item .cand-add { border: none; background: none; cursor: pointer; color: var(--cyan); font-size: 1rem; width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto; }
+.sched-cand-item .cand-add:hover { background: #def0f0; }
+@media (min-width: 760px) { .sched-cols { grid-template-columns: 1.5fr 1fr; align-items: start; } }
 
 /* ===== カード ===== */
 .cards { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
