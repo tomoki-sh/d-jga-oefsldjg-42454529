@@ -606,13 +606,15 @@ function populateSchedAddSelect() {
   });
 }
 
-/* 右側の候補リスト（スポット/レストラン/カフェ）を描画。ドラッグまたは⊕で左へ追加 */
-function renderSchedCandidates() {
+/* 右側の候補リスト（スポット/レストラン/カフェ）を描画。ドラッグまたは⊕で左へ追加。
+   filter: "all" | "spots" | "restaurants" | "cafes" */
+function renderSchedCandidates(filter = "all") {
   const el = $("#sched-candidates"); if (!el) return;
-  const groups = [["spots", "🌿 スポット"], ["restaurants", "🍽 レストラン"], ["cafes", "☕ カフェ"]];
-  el.innerHTML = groups.map(([key, label], gi) => {
-    const emoji = ["spot", "restaurant", "cafe"][gi];
-    const head = `<li class="sched-cand-head">${label}</li>`;
+  const groups = [["spots", "🌿 スポット", "spot"], ["restaurants", "🍽 レストラン", "restaurant"], ["cafes", "☕ カフェ", "cafe"]];
+  const shown = filter === "all" ? groups : groups.filter(g => g[0] === filter);
+  const withHead = filter === "all";  // 「すべて」のときだけ見出しを挟む
+  el.innerHTML = shown.map(([key, label, emoji]) => {
+    const head = withHead ? `<li class="sched-cand-head">${label}</li>` : "";
     const items = DATA[key].map(p =>
       `<li class="sched-cand-item" data-name="${esc(p.name)}">
         <span class="type-emoji">${TYPE_ICONS[emoji]}</span>
@@ -624,6 +626,16 @@ function renderSchedCandidates() {
   $$("#sched-candidates .cand-add").forEach(b => b.addEventListener("click", () => {
     schedule.push({ time: "", text: b.dataset.name, status: "tentative" });
     saveSchedule(); renderScheduleEditor();
+  }));
+}
+
+/* 候補リストのサブタブ（すべて／スポット／レストラン／カフェ）切替 */
+function setupSchedCandTabs() {
+  const bar = $("#sched-cand-tabs"); if (!bar) return;
+  $$(".sched-cand-tab", bar).forEach(t => t.addEventListener("click", () => {
+    $$(".sched-cand-tab", bar).forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    renderSchedCandidates(t.dataset.filter);
   }));
 }
 
@@ -991,6 +1003,7 @@ function init() {
   renderSchedule();
   renderScheduleEditor();
   renderSchedCandidates();
+  setupSchedCandTabs();
   populateSchedAddSelect();
   setupScheduleSortable();
   renderCards("#cards-spots", DATA.spots, "spot");

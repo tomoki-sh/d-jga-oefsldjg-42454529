@@ -172,6 +172,10 @@ a { color: var(--ai); }
 .sched-cols { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 .sched-col-h { margin: 0 0 .5rem; font-size: .92rem; color: var(--ai); }
 .sched-col-h .muted { font-weight: 400; }
+.sched-cand-tabs { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .55rem; }
+.sched-cand-tab { border: 1px solid var(--line); background: var(--card); color: var(--ai); font: inherit; font-size: .78rem; padding: .26rem .62rem; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.sched-cand-tab:hover { background: var(--kinari-2); }
+.sched-cand-tab.active { background: var(--ai); color: #fff; border-color: var(--ai); font-weight: 700; }
 .sched-cand-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; max-height: 460px; overflow-y: auto; }
 .sched-cand-head { font-size: .76rem; font-weight: 700; color: var(--ai); padding: .35rem .2rem .1rem; position: sticky; top: 0; background: var(--card); }
 .sched-cand-item {
