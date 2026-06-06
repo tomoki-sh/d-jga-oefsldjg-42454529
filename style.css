@@ -133,8 +133,12 @@ a { color: var(--ai); }
 .tag.opt { background: #e0eef0; color: #1f7a7a; }
 .tag.user { background: var(--cyan); color: #fff; }
 .plan-card.userplan { border-left: 4px solid var(--cyan); }
-.plan-del { margin-left: auto; border: 1px solid var(--line); background: #fff; color: var(--shu); font: inherit; font-size: .74rem; padding: .15rem .55rem; border-radius: 999px; cursor: pointer; }
+.plan-actions { margin-left: auto; display: flex; gap: .3rem; flex-wrap: wrap; }
+.plan-del, .plan-export { border: 1px solid var(--line); background: #fff; font: inherit; font-size: .74rem; padding: .15rem .55rem; border-radius: 999px; cursor: pointer; }
+.plan-del { color: var(--shu); }
 .plan-del:hover { background: #fbe3df; }
+.plan-export { color: var(--cyan); }
+.plan-export:hover { background: #def0f0; }
 
 .branch-grid { display: grid; gap: .7rem; grid-template-columns: 1fr; margin-top: .4rem; }
 .branch {

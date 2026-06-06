@@ -530,9 +530,11 @@ function planCardHtml(pl, opts = {}) {
   const tag = opts.user
     ? `<span class="tag user">保存</span>`
     : (pl.tag ? `<span class="tag top">${esc(pl.tag)}</span>` : (pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>'));
-  const del = opts.user ? `<button class="plan-del" data-pid="${pl.id}" aria-label="このプランを削除">削除</button>` : "";
+  const actions = opts.user
+    ? `<div class="plan-actions"><button class="plan-export" data-pid="${pl.id}">共有用に書き出す</button><button class="plan-del" data-pid="${pl.id}" aria-label="このプランを削除">削除</button></div>`
+    : "";
   return `<div class="plan-card ${pl.featured ? "featured" : ""} ${opts.user ? "userplan" : ""}">
-      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}${del}</div>
+      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}${actions}</div>
       ${pl.route ? `<p class="plan-route">${esc(pl.route)}</p>` : ""}
       <ol class="timeline">${tl}</ol>
     </div>`;
@@ -547,6 +549,23 @@ function renderSchedule() {
       `<div class="branch ${b.cls}"><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p></div>`).join("")}</div>`;
   $("#schedule-content").innerHTML = builtin + user + branches;
   $$("#schedule-content .plan-del").forEach(b => b.addEventListener("click", () => deleteUserPlan(+b.dataset.pid)));
+  $$("#schedule-content .plan-export").forEach(b => b.addEventListener("click", () => exportUserPlanToData(+b.dataset.pid)));
+}
+
+/* 保存プランを DATA.plans 用のオブジェクトとして書き出す（commitで全員に共有） */
+function exportUserPlanToData(id) {
+  const pl = userPlans.find(p => p.id === id); if (!pl) return;
+  const items = pl.items.map(([t, b, s]) => `    [${JSON.stringify(t)}, ${JSON.stringify(b)}, ${JSON.stringify(s || "")}]`).join(",\n");
+  const out = `{
+  title: ${JSON.stringify(pl.title)},
+  featured: false,
+  route: "",
+  items: [
+${items}
+  ]
+},`;
+  if (navigator.clipboard) navigator.clipboard.writeText(out).catch(() => {});
+  window.prompt("この内容を app.js の DATA.plans 配列に追加して commit すると、全員のプラン例に表示されます（クリップボードにもコピー済み）:", out);
 }
 
 /* ---- 編集中スケジュールを「プラン例」に保存（この端末に保存・削除可） ---- */
