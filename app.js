@@ -346,7 +346,21 @@ const DATA = {
   /* === スケジュール（プラン） === */
   plans: [
     {
-      title: "本命プラン（おすすめ）", featured: true,
+      title: "基本プラン", featured: true, tag: "基本",
+      route: "大阪（受取）→ 三重でランチ → VISONでカフェ →（余れば夕食）→ 19:00 三重出発 → 大阪（返却 21:30）",
+      items: [
+        ["9:30", "日産レンタカー 大阪上本町店 で受取", "確定"],
+        ["12:00", "三重でランチ（4店から選択）", "確定。いせもん / れんが / 漣 伊勢店 / うなふじ"],
+        ["13:30", "時間が余ったらどこかスポット挟む", "未確定（候補から選ぶ）"],
+        ["14:30", "VISON でカフェ（Confiture H ほか）", "確定"],
+        ["16:30", "時間が余ったらどこかスポット挟む", "未確定"],
+        ["17:30", "時間が余れば夕食（なければ大阪に帰ってから）", "未確定"],
+        ["19:00", "三重出発 締め切り", "確定"],
+        ["21:30", "日産レンタカー 大阪上本町店 へ返却", "確定"]
+      ]
+    },
+    {
+      title: "本命プラン（おすすめ）", featured: false,
       route: "大阪（レンタカー）→ ランチ4店から選択 → 二見興玉神社・夫婦岩 → 伊勢シーパラダイス（気分次第）→ VISON短時間 → 松阪牛ディナー → 大阪",
       items: [
         ["9:30", "日産レンタカー 大阪上本町店 で受取", "確定。レンタカー受取"],
@@ -514,8 +528,9 @@ function renderSchedule() {
     const tl = pl.items.map(([t, b, s]) =>
       `<li><span class="tl-time">${esc(t)}</span><span class="tl-body">${esc(b)}${s ? `<span class="tl-sub">${esc(s)}</span>` : ""}</span></li>`
     ).join("");
+    const tag = pl.tag ? `<span class="tag top">${esc(pl.tag)}</span>` : (pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>');
     return `<div class="plan-card ${pl.featured ? "featured" : ""}">
-      <div class="plan-head"><h3>${esc(pl.title)}</h3>${pl.featured ? '<span class="tag top">本命</span>' : '<span class="tag alt">別案</span>'}</div>
+      <div class="plan-head"><h3>${esc(pl.title)}</h3>${tag}</div>
       <p class="plan-route">${esc(pl.route)}</p>
       <ol class="timeline">${tl}</ol>
     </div>`;
